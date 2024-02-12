@@ -33,6 +33,8 @@ public static class IdentitySeederExtensions
     {
         foreach (var role in identitySeeds.Roles)
         {
+            if( role.Role.Name is null)
+                continue;
             if (!roleManager.RoleExistsAsync(role.Role.Name).Result)
             {
                 IdentityResult result = roleManager.CreateAsync(role.Role).Result;
@@ -51,6 +53,9 @@ public static class IdentitySeederExtensions
     {
         foreach (var user in identitySeeds.Users)
         {
+            if(user.User.Email is null)
+                continue;
+            
             if (userManager.FindByEmailAsync(user.User.Email).Result == null)
             {
                 IdentityResult result = userManager.CreateAsync(user.User, user.Password).Result;
@@ -67,6 +72,8 @@ public static class IdentitySeederExtensions
                     {
                         foreach (TRole role in user.Roles)
                         {
+                            if(role.Name is null)
+                                continue;
                             if (!identitySeeds.Roles.Any(i => i.Role.Name == role.Name)
                                 && !roleManager.RoleExistsAsync(role.Name).Result)
                             {

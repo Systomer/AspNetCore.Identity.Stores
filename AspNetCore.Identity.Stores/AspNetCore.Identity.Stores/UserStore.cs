@@ -61,7 +61,7 @@ internal sealed class UserStore<TUser, TRole, TUserClaim, TUserRole, TUserLogin,
         if (roleIds.Any())
         {
             var roles = await rolesTable.GetAsync(cancellationToken);
-            return roles.Join(roleIds, role => role.Id, id => id, (role, id) => role.Name).ToList();
+            return roles.Join(roleIds, role => role.Id, id => id, (role, id) => role.Name ?? "").ToList();
         }
         else
             return Enumerable.Empty<string>().ToList();
