@@ -18,7 +18,7 @@ public static class IdentityStoresOptionsExtensions
     public static IdentityStoresOptions UseAzureCosmosDB(this IdentityStoresOptions identityStoresOptions, string accountEndpoint, TokenCredential tokenCredential, string databaseId, string containerId = "AspNetIdentity", CosmosClientOptions? clientOptions = null) => identityStoresOptions.UseAzureCosmosDB(new CosmosClient(accountEndpoint, tokenCredential, clientOptions), databaseId, containerId);
 
     public static IdentityStoresOptions UseAzureCosmosDB(this IdentityStoresOptions identityStoresOptions, Func<CosmosClient> clientFactory, string databaseId, string containerId = "AspNetIdentity") => identityStoresOptions.UseAzureCosmosDB(clientFactory.Invoke(), databaseId, containerId);
-
+    
     public static IdentityStoresOptions UseAzureCosmosDB(this IdentityStoresOptions identityStoresOptions, CosmosClient cosmosClient, string databaseId, string containerId = "AspNetIdentity")
     {
         AzureCosmosDBOptions azureCosmosDBOptions = new(cosmosClient, databaseId, containerId);
@@ -31,8 +31,9 @@ public static class IdentityStoresOptionsExtensions
 
     private static async Task InitializeDatabaseAsync(AzureCosmosDBOptions azureCosmosDBOptions)
     {
-        var createDatabaseResponse = await azureCosmosDBOptions.CosmosClient.CreateDatabaseIfNotExistsAsync(azureCosmosDBOptions.DatabaseId);
-        _ = await createDatabaseResponse.Database.CreateContainerIfNotExistsAsync(azureCosmosDBOptions.ContainerId, $"/{CosmosContainerEntity.PartitionKey}");
+        // SS: Commenting out for now as it tends to crash
+        // var createDatabaseResponse = await azureCosmosDBOptions.CosmosClient.CreateDatabaseIfNotExistsAsync(azureCosmosDBOptions.DatabaseId);
+        // _ = await createDatabaseResponse.Database.CreateContainerIfNotExistsAsync(azureCosmosDBOptions.ContainerId, $"/{CosmosContainerEntity.PartitionKey}");        
     }
 
     public static CosmosClient GetCosmosClient(this IdentityStoresOptions identityStoresOptions) => options[identityStoresOptions].CosmosClient;
